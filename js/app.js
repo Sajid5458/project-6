@@ -1,3 +1,4 @@
+// load data function
 const loadData = () => {
     const inputFeild = document.getElementById('search-feild');
     const emptyInput = document.getElementById('empty-input');
@@ -6,29 +7,34 @@ const loadData = () => {
     if (inputFeild.value === '') {
         emptyInput.classList.remove('d-none');
     } else {
-        const url = `http://openlibrary.org/search.json?q=${inputFeildText}`;
+        // api links
+        const url = `https://openlibrary.org/search.json?q=${inputFeildText}`;
         fetch(url)
             .then(res => res.json())
-            .then(data => displayData(data.docs.slice(0, 30)))
+            .then(data => displayData(data))
         emptyInput.classList.add('d-none');
 
     }
     inputFeild.value = '';
 }
+// display data function
 const displayData = products => {
+    console.log(products);
+    const allProducts = products.docs.slice(0, 30);
     const cardsContainer = document.getElementById('cards-container');
     cardsContainer.textContent = '';
     const totalDisplayProducts = document.getElementById('total-products');
     const errorMessage = document.getElementById('error-message');
     // error messages
-    if (products.length > 0) {
+    if (allProducts.length > 0) {
         errorMessage.classList.add('d-none')
-        totalDisplayProducts.innerHTML = `<h2 class="text-center d-block">${products.length} Books Found</h2>`;
-    } else if (products.length === 0) {
+        totalDisplayProducts.innerHTML = `<h2 class="text-center d-block">Books Found ${products.numFound} showing results ${allProducts.length}</h2>`;
+    } else if (allProducts.length === 0) {
         errorMessage.classList.remove('d-none');
-        totalDisplayProducts.innerHTML = `<h2 class="text-center d-none">${products.length} Books Found</h2>`;
+        totalDisplayProducts.innerHTML = `<h2 class="text-center d-none">Books Found ${products.numFound} showing results ${allProducts.length}</h2>`;
     }
-    products.forEach(product => {
+    // getting products
+    allProducts.forEach(product => {
         const div = document.createElement('div');
         div.classList.add('col');
         div.innerHTML = `
